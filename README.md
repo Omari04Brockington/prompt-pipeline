@@ -24,7 +24,7 @@ Skills are global and personal, living under `~/.claude/skills/`. Clone this rep
 that location so the folder name matches the skill name:
 
 ```bash
-git clone https://github.com/<owner>/prompt-pipeline.git ~/.claude/skills/prompt-pipeline
+git clone https://github.com/Omari04Brockington/prompt-pipeline.git ~/.claude/skills/prompt-pipeline
 ```
 
 To edit and version your own copy, just edit `SKILL.md` in place and commit — the
