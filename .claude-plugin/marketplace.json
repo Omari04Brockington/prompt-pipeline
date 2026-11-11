@@ -1,0 +1,14 @@
+{
+  "name": "omari-skills",
+  "description": "Personal Claude Code workflow skills by Omari04Brockington.",
+  "owner": {
+    "name": "Omari04Brockington"
+  },
+  "plugins": [
+    {
+      "name": "prompt-pipeline",
+      "source": "./",
+      "description": "Request-to-production workflow (scout, grill, approve, execute, hand off) plus a user-impact-aware deep review."
+    }
+  ]
+}

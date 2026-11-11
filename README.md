@@ -1,46 +1,65 @@
 # prompt-pipeline
 
-A [Claude Code](https://claude.com/claude-code) **skill** that turns a rough request
-into refined, reviewed work through a six-stage workflow — with independent review
-gates before and after execution. Every stage is skippable on request.
+A [Claude Code](https://claude.com/claude-code) plugin with two skills:
 
-## The six stages
+- **`prompt-pipeline`** turns a rough request into approved, verified work.
+- **`deep-review`** reviews the result in a fresh session, checking code quality,
+  codebase fit, spec conformance, and impact on the product's users.
+
+## The pipeline
 
 | Stage | What happens |
 |-------|--------------|
-| **0 — Gate** | Judge complexity. Trivial asks are answered normally; substantial ones run the pipeline. |
-| **1 — Prompt engineering** | Interactively refine the request into the best possible prompt (revised prompt + suggestions + option-picker questions). |
-| **2 — Prompt review** | An independent agent audits the finalized prompt for ambiguity, missing constraints, and scope. |
-| **3 — Plan** | Enter plan mode; produce a concrete implementation plan and get approval. |
-| **4 — Plan review** | An independent agent reviews the plan for gaps, wrong assumptions, and ordering hazards. |
-| **5 — Execution** | Do the work per the approved plan, keeping the build green. |
-| **6 — Code review** | Three parallel finders (correctness · security/edge-cases · simplicity) + one adjudicator produce a single ranked list; confirmed issues are fixed. |
+| **0 - Gate** | Trivial asks are answered normally; substantial ones run the pipeline. |
+| **1 - Scout: Repo** | Find what already exists: rules, related code, conventions, product context, CI checks. |
+| **2 - Scout: Practices** | Research current best practices from dated primary sources. |
+| **3 - Grill** | Decide only what changes the outcome, with evidence-backed multiple-choice questions. |
+| **4 - pipeline.md** | Write a transient plan (goal, criteria, decisions, steps, verification, risks) outside the repo. |
+| **5 - Plan check** | An independent agent audits `pipeline.md` before you see it. |
+| **6 - Approval** | You approve, revise, or cancel. Nothing changes before approval. |
+| **7 - Execute and verify** | Agents do the work and run every check; material divergence returns for approval. |
+| **8 - Handoff** | The pull request description becomes the review brief; `pipeline.md` is deleted. |
 
-See [`SKILL.md`](./SKILL.md) for the full instructions.
+Every stage is skippable on request ("skip scouting", "no grilling", "just do it").
+
+## Deep review
+
+Four independent finders (Quality, Implementation fit, Spec conformance, User and
+product impact) and one adjudicator that re-reads the code, drops anything below 80%
+confidence, and ranks the rest by user impact. Every finding says **what happens if
+it is left unresolved**, and the review ends with a verdict.
 
 ## Install
 
-Skills are global and personal, living under `~/.claude/skills/`. Clone this repo into
-that location so the folder name matches the skill name:
-
-```bash
-git clone https://github.com/Omari04Brockington/prompt-pipeline.git ~/.claude/skills/prompt-pipeline
+```
+/plugin install prompt-pipeline --marketplace Omari04Brockington/prompt-pipeline
 ```
 
-To edit and version your own copy, just edit `SKILL.md` in place and commit — the
-running Claude Code picks up changes on the next session.
+Or in two steps:
+
+```
+/plugin marketplace add Omari04Brockington/prompt-pipeline
+/plugin install prompt-pipeline@omari-skills
+```
+
+If you previously cloned this repo into `~/.claude/skills/prompt-pipeline`, remove that
+folder (and any separate `~/.claude/skills/deep-review`) after installing, so each
+skill loads only once.
 
 ## Use
 
-In Claude Code, invoke it explicitly:
-
 ```
-/prompt-pipeline <your rough request>
+/prompt-pipeline:prompt-pipeline <your rough request>
 ```
 
-…or let it trigger automatically on the first substantial task of a session. Skip any
-stage by saying "skip planning", "just do it", "no review", etc.
+Then, in a new session after the handoff:
+
+```
+/prompt-pipeline:deep-review pr=<number>
+```
+
+Both skills can also trigger automatically from their descriptions.
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT - see [`LICENSE`](./LICENSE).

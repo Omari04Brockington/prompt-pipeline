@@ -1,0 +1,8 @@
+{
+  "name": "prompt-pipeline",
+  "description": "Request-to-production workflow (scout, grill, approve, execute, hand off) plus a user-impact-aware deep review.",
+  "version": "2.0.0",
+  "author": { "name": "Omari04Brockington" },
+  "repository": "https://github.com/Omari04Brockington/prompt-pipeline",
+  "license": "MIT"
+}
